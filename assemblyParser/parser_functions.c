@@ -29,6 +29,7 @@ instruction_mnemonics instruction_mnemonics_list[] =
 {
     {"add", 'r', 0},
     {"addi", 'i', 0},
+    {"lw", 'I', 1},
     {"sw", 's', 0}
 };
 
@@ -111,22 +112,52 @@ void encode_I_type(char* token, FILE* output_file, int list_index)
     print_I_type(encoded_instruction, output_file);
 }
 
-void encode_S_type(char* token, FILE* output_file, int list_index)
+void encode_ILOAD_type(char* token, FILE* output_file, int list_index)
+{
+    I_type encoded_instruction = I_type_list[list_index];
+
+    // Parse the destination register (rd)
+    token = strtok(NULL, " ,\t"); // Get the next token
+    encoded_instruction.rd = atoi((token + 1)); // Skip the 'x' prefix
+
+    // Parse the immediate value and source register (rs1)
+    token = strtok(NULL, " ,\t"); // Get the next token
+    char* open_paren = strchr(token, '('); // Find '(' in the token
+    if (open_paren != NULL) {
+        *open_paren = '\0'; // Null-terminate the immediate part
+        encoded_instruction.imm12 = atoi(token); // Immediate value
+        encoded_instruction.rs1 = atoi((open_paren + 2)); // Source register (skip '(' and 'x')
+    } else {
+        fprintf(stderr, "Error: Invalid LW instruction format\n");
+        return;
+    }
+
+    // Print the encoded instruction
+    print_I_type(encoded_instruction, output_file);
+}
+
+
+void encode_S_type(char* token, FILE* output_file, int list_index) 
 {
     S_type encoded_instruction = S_type_list[list_index];
 
+    // Parse the source register (rs2)
     token = strtok(NULL, " ,\t"); // Get the next token
-    //Setting the destination register
-    encoded_instruction.rs1 = atoi((token+1));
+    encoded_instruction.rs2 = atoi((token + 1)); // Skip the 'x' prefix
 
+    // Parse the immediate value and the base register (rs1)
     token = strtok(NULL, " ,\t"); // Get the next token
-    //Setting source register
-    encoded_instruction.rs2 = atoi((token+1));
+    char* open_paren = strchr(token, '('); // Find '(' in the token
+    if (open_paren != NULL) {
+        *open_paren = '\0'; // Null-terminate the immediate part
+        encoded_instruction.imm12 = atoi(token); // Immediate value
+        encoded_instruction.rs1 = atoi((open_paren + 2)); // Base register (skip '(' and 'x')
+    } else {
+        fprintf(stderr, "Error: Invalid SW instruction format\n");
+        return;
+    }
 
-    token = strtok(NULL, " ,\t"); // Get the next token
-    //Setting the immediate value
-    encoded_instruction.imm12 = atoi(token);
-
+    // Print the encoded instruction
     print_S_type(encoded_instruction, output_file);
 }
 
@@ -143,10 +174,14 @@ void parse_and_encode_instruction(char line[], FILE* output_file)
     {
         if(strcmp(token, instruction_mnemonics_list[i].mnemonic) == 0)
         {
+            
             switch(instruction_mnemonics_list[i].format)
             {
                 case 'r':
                     encode_R_type(token, output_file, instruction_mnemonics_list[i].index);
+                    break;
+                case 'I':
+                    encode_ILOAD_type(token, output_file, instruction_mnemonics_list[i].index);
                     break;
                 case 'i':
                     encode_I_type(token, output_file, instruction_mnemonics_list[i].index);

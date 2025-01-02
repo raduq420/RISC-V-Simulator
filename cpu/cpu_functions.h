@@ -11,6 +11,7 @@
 #define R_OP 0b0110011
 #define IMM_OP 0b0010011
 #define ILOAD_OP 0b0000011
+#define S_OP 0b0100011
 
 // I-type
 #define ADDI_OP 0b0010011
@@ -25,6 +26,7 @@ void populate_code_segment(unsigned int* code_segment, FILE* input_file);
 void R_instruction_execute(unsigned int current_instruction);
 void IMM_instruction_execute(unsigned int instruction);
 void ILOAD_instruction_execute(unsigned int instruction, uint8_t* data_segment);
+void S_instruction_execute(unsigned int instruction, uint8_t* data_segment);
 
 uint8_t get_opcode(unsigned int instruction);
 uint8_t get_rd(unsigned int instruction);

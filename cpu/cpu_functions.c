@@ -23,6 +23,13 @@ uint8_t get_funct3(unsigned int instruction)
     return (uint8_t)value;
 }
 
+uint8_t get_imm12_S(unsigned int instruction)
+{
+    uint32_t value;
+    value = ( (instruction & 0b11111110000000000000000000000000) >> 20 ) + ( (instruction & 0b00000000000000000000111110000000) >> 7 );
+    return (uint8_t)value;
+}
+
 uint8_t get_rs1(unsigned int instruction)
 {
     uint32_t value;
@@ -106,13 +113,33 @@ void populate_code_segment(unsigned int* code_segment, FILE* input_file)
 void R_instruction_execute(unsigned int instruction)
 {
     x[get_rd(instruction)] = alu_unit(x[get_rs1(instruction)], x[get_rs2(instruction)], get_funct3(instruction), get_funct7(instruction));
-    printf("Executed instruction %u, result %d = %d + %d \n", instruction, (int)x[get_rd(instruction)], (int)x[get_rs1(instruction)], (int)x[get_rs2(instruction)]);
+    printf("Executed instruction %u, result x%d = %d + %d \n", instruction, get_rd(instruction), (int)x[get_rs1(instruction)], (int)x[get_rs2(instruction)]);
 }
 
 void IMM_instruction_execute(unsigned int instruction)
 {
     x[get_rd(instruction)] = alu_unit(x[get_rs1(instruction)], get_imm12_I(instruction), get_funct3(instruction), 0b1111111);
-    printf("Executed instruction %u, result %d = %d + %d \n", instruction, (int)x[get_rd(instruction)], (int)x[get_rs1(instruction)], get_imm12_I(instruction));
+    printf("Executed instruction %u, result x%d = %d + %d \n", instruction, get_rd(instruction), (int)x[get_rs1(instruction)], get_imm12_I(instruction));
+}
+
+void S_instruction_execute(unsigned int instruction, uint8_t* data_segment)
+{
+    switch(get_funct3(instruction))
+    {
+        //SW
+        case 0b010:
+        {
+            uint32_t* data_address;
+            data_address = (uint32_t*)(data_segment + x[get_rs1(instruction)] + get_imm12_S(instruction));
+           // printf("address = %d ", (int)(data_segment + x[get_rs1(instruction)] + get_imm12_S(instruction)));
+           // printf("address = %d = %d + %d + %d ", (int)(data_segment + get_imm12_I(instruction) + get_rs1(instruction)), (int)data_segment,
+          //  (get_imm12_I(instruction)), x[get_rs1(instruction)]);
+            *data_address = x[get_rs2(instruction)];
+            printf("Executed instruction %u, at adress x%d + %d it stored the value %d from x%d\n", instruction, get_rs1(instruction), get_imm12_S(instruction)
+            , *data_address, get_rs2(instruction));
+            break;
+        }
+    }
 }
 
 void ILOAD_instruction_execute(unsigned int instruction, uint8_t* data_segment)
@@ -120,11 +147,15 @@ void ILOAD_instruction_execute(unsigned int instruction, uint8_t* data_segment)
     switch(get_funct3(instruction))
     {
         //LW
-        case 0b000:
+        case 0b010:
         {
             uint32_t* data_address;
-            data_address = (uint32_t*)(data_segment + get_imm12_I(instruction) + get_rs1(instruction));
+            data_address = (uint32_t*)(data_segment + get_imm12_I(instruction) + x[get_rs1(instruction)]);
             x[get_rd(instruction)] = *data_address;
+         //   printf("address = %d = %d + %d + %d ", (int)(data_segment + get_imm12_I(instruction) + get_rs1(instruction)), (int)data_segment,
+          //  (get_imm12_I(instruction)), x[get_rs1(instruction)]);
+            printf("Executed instruction %u, from address x%d + %d loaded the value %d in x%d\n", instruction, get_rs1(instruction),
+            get_imm12_I(instruction), *data_address, get_rd(instruction));
             break;
         }
     }

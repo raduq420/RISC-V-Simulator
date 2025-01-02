@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
         if (line[0] == '\0' || line[0] == '#') {
             continue;
         }
-
         // Parse and encode the instruction
         parse_and_encode_instruction(line, output_file);
     }

@@ -44,6 +44,9 @@ int main(int argc, char* argv[])
                 ILOAD_instruction_execute(current_instruction, data_segment);
                 break;
             
+            case S_OP:
+                printf("Starting S instruction\n");
+                S_instruction_execute(current_instruction, data_segment);
         }
 
         pc += 1;
