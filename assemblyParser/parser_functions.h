@@ -41,7 +41,7 @@ typedef struct {
     const unsigned short int index;
 } instruction_mnemonics;
 
-#define mnemonic_list_size 4
+#define mnemonic_list_size 7
 extern instruction_mnemonics instruction_mnemonics_list[];
 void parse_and_encode_instruction(char line[], FILE* output_file);
 

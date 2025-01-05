@@ -63,7 +63,7 @@ uint64_t alu_unit(int64_t in1, int64_t in2, uint8_t funct3, uint8_t funct7)
     {
 
         
-        //ADD - ADDI
+        //ADD - ADDI - SUB
         case 0b000:
             if(funct7 != 0b1111111)
                 switch(funct7)
@@ -78,6 +78,13 @@ uint64_t alu_unit(int64_t in1, int64_t in2, uint8_t funct3, uint8_t funct7)
             else
                 //ADDI
                 return in1 + in2;
+            break;
+        
+        //SLL - SLLI
+        case 0b001:
+            return (in1 << (in2 & 0x3F));
+        
+
             
     }
 
@@ -113,13 +120,13 @@ void populate_code_segment(unsigned int* code_segment, FILE* input_file)
 void R_instruction_execute(unsigned int instruction)
 {
     x[get_rd(instruction)] = alu_unit(x[get_rs1(instruction)], x[get_rs2(instruction)], get_funct3(instruction), get_funct7(instruction));
-    printf("Executed instruction %u, result x%d = %d + %d \n", instruction, get_rd(instruction), (int)x[get_rs1(instruction)], (int)x[get_rs2(instruction)]);
+    printf("Executed instruction %u, result x%d = %d symbol %d \n", instruction, get_rd(instruction), (int)x[get_rs1(instruction)], (int)x[get_rs2(instruction)]);
 }
 
 void IMM_instruction_execute(unsigned int instruction)
 {
     x[get_rd(instruction)] = alu_unit(x[get_rs1(instruction)], get_imm12_I(instruction), get_funct3(instruction), 0b1111111);
-    printf("Executed instruction %u, result x%d = %d + %d \n", instruction, get_rd(instruction), (int)x[get_rs1(instruction)], get_imm12_I(instruction));
+    printf("Executed instruction %u, result x%d = %d symbol %d \n", instruction, get_rd(instruction), (int)x[get_rs1(instruction)], get_imm12_I(instruction));
 }
 
 void S_instruction_execute(unsigned int instruction, uint8_t* data_segment)
