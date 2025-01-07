@@ -34,6 +34,6 @@ uint8_t get_funct3(unsigned int instruction);
 uint8_t get_rs1(unsigned int instruction);
 uint8_t get_rs2(unsigned int instruction); 
 uint8_t get_imm12_I(unsigned int instruction);
-
+uint8_t get_imm12_S(unsigned int instruction);
 
 #endif

@@ -1,6 +1,9 @@
 #include "parser_functions.h"
 
 //imm[11:5] rs2 rs1 010 imm[4:0] 0100011 SW
+
+
+
 R_type R_type_list[] =
 {
     //OPCODE  - FUNCT3 - FUNCT 7

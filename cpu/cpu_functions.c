@@ -1,4 +1,5 @@
 #include "cpu_functions.h"
+#include "klog_extension.h"
 
 uint64_t x[32];
 
@@ -57,7 +58,7 @@ uint8_t get_funct7(unsigned int instruction)
     return (uint8_t) value;
 }
 
-uint64_t alu_unit(int64_t in1, int64_t in2, uint8_t funct3, uint8_t funct7)
+uint64_t alu_unit(char* mnemonic, int64_t in1, int64_t in2, uint8_t funct3, uint8_t funct7)
 {
     switch(funct3)
     {
@@ -70,18 +71,24 @@ uint64_t alu_unit(int64_t in1, int64_t in2, uint8_t funct3, uint8_t funct7)
                 {
                     //ADD
                     case 0b0000000:
+                        strcpy(mnemonic, "add");
                         return in1 + in2;
                     //SUB
                     case 0b0100000:
+                        strcpy(mnemonic, "sub");
                         return in1 - in2;
                 }
             else
+            {
                 //ADDI
+                strcpy(mnemonic, "addi");
                 return in1 + in2;
+            }
             break;
         
         //SLL - SLLI
         case 0b001:
+            strcpy(mnemonic, "sll");
             return (in1 << (in2 & 0x3F));
         
 
@@ -117,55 +124,70 @@ void populate_code_segment(unsigned int* code_segment, FILE* input_file)
 
 }
 
+
 void R_instruction_execute(unsigned int instruction)
 {
-    x[get_rd(instruction)] = alu_unit(x[get_rs1(instruction)], x[get_rs2(instruction)], get_funct3(instruction), get_funct7(instruction));
-    printf("Executed instruction %u, result x%d = %d symbol %d \n", instruction, get_rd(instruction), (int)x[get_rs1(instruction)], (int)x[get_rs2(instruction)]);
+    int old_value = x[get_rd(instruction)];
+    char mnemonic[4];
+
+    x[get_rd(instruction)] = alu_unit(mnemonic, x[get_rs1(instruction)], x[get_rs2(instruction)], get_funct3(instruction), get_funct7(instruction));
+
+    print_klog(instruction, 'r', mnemonic, old_value, x[get_rd(instruction)]);
+
 }
 
 void IMM_instruction_execute(unsigned int instruction)
 {
-    x[get_rd(instruction)] = alu_unit(x[get_rs1(instruction)], get_imm12_I(instruction), get_funct3(instruction), 0b1111111);
-    printf("Executed instruction %u, result x%d = %d symbol %d \n", instruction, get_rd(instruction), (int)x[get_rs1(instruction)], get_imm12_I(instruction));
+    int old_value = x[get_rd(instruction)];
+    char mnemonic[4];
+
+    x[get_rd(instruction)] = alu_unit(mnemonic, x[get_rs1(instruction)], get_imm12_I(instruction), get_funct3(instruction), 0b1111111);
+
+    print_klog(instruction, 'i', mnemonic, old_value, x[get_rd(instruction)]);
+
 }
 
 void S_instruction_execute(unsigned int instruction, uint8_t* data_segment)
 {
+
+    char mnemonic[4];
+
     switch(get_funct3(instruction))
     {
         //SW
         case 0b010:
         {
+            strcpy(mnemonic, "sw");
             uint32_t* data_address;
             data_address = (uint32_t*)(data_segment + x[get_rs1(instruction)] + get_imm12_S(instruction));
-           // printf("address = %d ", (int)(data_segment + x[get_rs1(instruction)] + get_imm12_S(instruction)));
-           // printf("address = %d = %d + %d + %d ", (int)(data_segment + get_imm12_I(instruction) + get_rs1(instruction)), (int)data_segment,
-          //  (get_imm12_I(instruction)), x[get_rs1(instruction)]);
             *data_address = x[get_rs2(instruction)];
-            printf("Executed instruction %u, at adress x%d + %d it stored the value %d from x%d\n", instruction, get_rs1(instruction), get_imm12_S(instruction)
-            , *data_address, get_rs2(instruction));
             break;
         }
     }
+
+    print_klog(instruction, 's', mnemonic, x[get_rs1(instruction)] + get_imm12_S(instruction), x[get_rs2(instruction)]);
+
 }
 
 void ILOAD_instruction_execute(unsigned int instruction, uint8_t* data_segment)
 {
+    char mnemonic[4];
+
     switch(get_funct3(instruction))
     {
         //LW
         case 0b010:
         {
+            strcpy(mnemonic, "lw");
             uint32_t* data_address;
             data_address = (uint32_t*)(data_segment + get_imm12_I(instruction) + x[get_rs1(instruction)]);
             x[get_rd(instruction)] = *data_address;
-         //   printf("address = %d = %d + %d + %d ", (int)(data_segment + get_imm12_I(instruction) + get_rs1(instruction)), (int)data_segment,
-          //  (get_imm12_I(instruction)), x[get_rs1(instruction)]);
-            printf("Executed instruction %u, from address x%d + %d loaded the value %d in x%d\n", instruction, get_rs1(instruction),
-            get_imm12_I(instruction), *data_address, get_rd(instruction));
+
             break;
         }
     }
+
+    print_klog(instruction, 'I', mnemonic, get_imm12_I(instruction) + x[get_rs1(instruction)], x[get_rd(instruction)]);
 }
 
 

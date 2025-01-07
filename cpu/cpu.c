@@ -1,5 +1,5 @@
 #include "cpu_functions.h"
-
+#include "klog_extension.h"
 
 
 int main(int argc, char* argv[])
@@ -9,6 +9,11 @@ int main(int argc, char* argv[])
         perror("Unable to open file");
         return 1;
     }
+
+    //Emptying LOG file
+    FILE* log_file = fopen("log.txt", "w");
+    fprintf(log_file, "\n");
+    fclose(log_file);
 
     //Instantiate code segment
     //Allocating 400 bytes of memory for the code segment
@@ -23,12 +28,24 @@ int main(int argc, char* argv[])
 
     bool processor_running = true;
     unsigned int current_instruction;
+    unsigned int instruction_counter = 0;
+
     while(processor_running)
     {
         //Instruction fetch
         current_instruction = *pc;
+        instruction_counter++;
+
+        FILE* log_file = fopen("log.txt", "a");
+        fprintf(log_file, "%d: ", instruction_counter);
+        fclose(log_file);
+
+        uint32_t old_pc = (uint32_t)pc;
+
         switch(get_opcode(current_instruction))
         {
+            
+
             case R_OP:
                 printf("Starting R instruction\n");
                 R_instruction_execute(current_instruction);
@@ -50,6 +67,10 @@ int main(int argc, char* argv[])
         }
 
         pc += 1;
+
+        log_file = fopen("log.txt", "a");
+        fprintf(log_file, "   PC = 0x%x / 0x%x\n", old_pc, (int)pc);
+        fclose(log_file);
     }
 
     return 0;
