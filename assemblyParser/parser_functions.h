@@ -21,14 +21,14 @@ typedef struct {
     unsigned short int rd: 5;
     unsigned short int funct3: 3;
     unsigned short int rs1: 5;
-    unsigned short int imm12: 12;
+    short int imm12: 12;
 } I_type;
 
 extern I_type I_type_list[];
 
 typedef struct {
     unsigned short int opcode: 7;
-    unsigned short int imm12: 12;
+    short int imm12: 12;
     unsigned short int funct3: 3;
     unsigned short int rs1: 5;
     unsigned short int rs2: 5;
@@ -39,13 +39,10 @@ extern S_type S_type_list[];
 typedef struct {
 
     unsigned short int opcode: 7;
-    unsigned short int imm11: 1;
-    unsigned short int imm4_1: 4;
     unsigned short int funct3: 3;
     unsigned short int rs1: 5;
     unsigned short int rs2: 5;
-    unsigned short int imm10_5: 6;
-    unsigned short int imm12: 1;
+    short int imm12: 12;
 
 } B_type;
 
