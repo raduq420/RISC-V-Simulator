@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 typedef struct {
     unsigned short int opcode: 7;
@@ -36,12 +37,33 @@ typedef struct {
 extern S_type S_type_list[];
 
 typedef struct {
+
+    unsigned short int opcode: 7;
+    unsigned short int imm11: 1;
+    unsigned short int imm4_1: 4;
+    unsigned short int funct3: 3;
+    unsigned short int rs1: 5;
+    unsigned short int rs2: 5;
+    unsigned short int imm10_5: 6;
+    unsigned short int imm12: 1;
+
+} B_type;
+
+extern B_type B_type_list[];
+
+typedef struct {
     const char* mnemonic;
     const char format;
     const unsigned short int index;
 } instruction_mnemonics;
 
-#define mnemonic_list_size 7
+typedef struct {
+    char name[20];
+    unsigned int offset: 21;
+} label_list;
+
+
+#define mnemonic_list_size 8
 extern instruction_mnemonics instruction_mnemonics_list[];
 void parse_and_encode_instruction(char line[], FILE* output_file);
 

@@ -22,6 +22,8 @@ int main(int argc, char *argv[])
     
     while (fgets(line, sizeof(line), input_file) != NULL) {
         // Strip newline characters
+
+        printf("%s\n", line);
         line[strcspn(line, "\n")] = 0;
 
         // Skip empty lines and comments
