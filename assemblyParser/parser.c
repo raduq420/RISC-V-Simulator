@@ -8,6 +8,37 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    // Open the input assembly file to store labels
+    FILE *input_file2 = fopen(argv[1], "r");
+    if (input_file2 == NULL) {
+        printf("Error: Could not open input file %s\n", argv[1]);
+        return 1;
+    }
+
+    char line[256];
+    unsigned int offset = 0;
+    
+    while (fgets(line, sizeof(line), input_file2) != NULL) {
+        // Strip newline characters
+
+        line[strcspn(line, "\n")] = 0;
+
+        // Skip empty lines and comments
+        if (line[0] == '\0' || line[0] == '#') {
+            continue;
+        }
+        
+        char *token = strtok(line, " ,\t");
+        
+        // Check if the line is a label
+        if(token[strlen(token) - 1] == ':')
+        {
+            save_label(token, offset+1);
+        }
+        else offset++;
+        
+    }
+
     // Open the input assembly file
     FILE *input_file = fopen(argv[1], "r");
     if (input_file == NULL) {
@@ -18,7 +49,7 @@ int main(int argc, char *argv[])
     // Open the output file for writing encoded instructions
     FILE *output_file = fopen("output.txt", "w");
     
-    char line[256];
+    
     
     while (fgets(line, sizeof(line), input_file) != NULL) {
         // Strip newline characters

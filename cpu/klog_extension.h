@@ -7,6 +7,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-void print_klog(unsigned int instruction, char instruction_type, char* mnemonic, uint32_t oldValue, uint32_t newValue);
+void print_klog(unsigned int instruction, char instruction_type, char* mnemonic, int32_t oldValue, int32_t newValue);
 
 #endif

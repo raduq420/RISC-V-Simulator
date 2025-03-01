@@ -12,7 +12,15 @@ R_type R_type_list[] =
     //0110011 -  000   - 0100000 SUB
     {0b0110011, 0, 0b0, 0, 0, 0b0100000},
     //0110011 -  001   - 0000000 SLL
-    {0b0110011, 0, 0b001, 0, 0, 0b0}
+    {0b0110011, 0, 0b001, 0, 0, 0b0},
+    //0110011 -  100   - 0000000 XOR
+    {0b0110011, 0, 0b100, 0, 0, 0b0},
+    //0110011 -  010   - 0000000 SLT
+    {0b0110011, 0, 0b010, 0, 0, 0b0},
+    //0110011 -  111   - 0000000 AND
+    {0b0110011, 0, 0b111, 0, 0, 0b0},
+    //0110011 -  110   - 0000000 OR
+    {0b0110011, 0, 0b110, 0, 0, 0b0}
 };
 
 I_type I_type_list[] = 
@@ -36,8 +44,14 @@ S_type S_type_list[] =
 B_type B_type_list[] = 
 {
     //OPCODE - FUNCT3
-    //1100011 - 000
-    {0b1100011, 0b000, 0, 0, 0}
+    //1100011 - 000 BEQ
+    {0b1100011, 0b000, 0, 0, 0},
+    //1100011 - 001 BNE
+    {0b1100011, 0b001, 0, 0, 0},
+    //1100011 - 100 BLT
+    {0b1100011, 0b100, 0, 0, 0},
+    //1100011 - 101 BGE
+    {0b1100011, 0b101, 0, 0, 0}
 };
 
 instruction_mnemonics instruction_mnemonics_list[] =
@@ -45,11 +59,18 @@ instruction_mnemonics instruction_mnemonics_list[] =
     {"add", 'r', 0},
     {"sub", 'r', 1},
     {"sll", 'r', 2},
+    {"xor", 'r', 3},
+    {"slt", 'r', 4},
+    {"and", 'r', 5},
+    {"or", 'r', 6},
     {"addi", 'i', 0},
     {"lw", 'I', 1},
     {"slli", 'i', 2},
     {"sw", 's', 0},
-    {"beq", 'b', 0}
+    {"beq", 'b', 0},
+    {"bne", 'b', 1},
+    {"blt", 'b', 2},
+    {"bge", 'b', 3}
 };
 
 label_list existing_label_list[20];
@@ -97,13 +118,13 @@ void print_S_type(S_type instruction, FILE* output_file)
 
 void print_b_type(B_type instruction, FILE* output_file)
 {
-    print_binary(instruction.imm12>>12, output_file, 1);
-    print_binary(instruction.imm12>>5, output_file, 6);
+    print_binary(instruction.imm13>>12, output_file, 1);
+    print_binary(instruction.imm13>>5, output_file, 6);
     print_binary(instruction.rs2, output_file, 5);
     print_binary(instruction.rs1, output_file, 5);
     print_binary(instruction.funct3, output_file, 3);
-    print_binary(instruction.imm12>>1, output_file, 4);
-    print_binary(instruction.imm12>>11, output_file, 1);
+    print_binary(instruction.imm13>>1, output_file, 4);
+    print_binary(instruction.imm13>>11, output_file, 1);
     print_binary(instruction.opcode, output_file, 7);
     fprintf(output_file, "\n");
 }
@@ -223,30 +244,30 @@ void encode_B_type(char* token, FILE* output_file, int list_index)
     token = strtok(NULL, " ,\t");
 
     if(is_numeric(token) == 1)
-        encoded_instruction.imm12 = atoi(token); // Convert immediate string to integer
+        encoded_instruction.imm13 = atoi(token); // Convert immediate string to integer
     else
         for(int i = 0 ; i < label_list_size ; i++)
         {
             if(strcmp(token, existing_label_list[i].name) == 0)
             {
-                encoded_instruction.imm12 =  existing_label_list[i].offset - current_offset ;
-                encoded_instruction.imm12 *= 4; // Convert 32 bit words into 8 bit bytes
-                printf("%d = %d - %d", encoded_instruction.imm12, current_offset, existing_label_list[i].offset);
+                encoded_instruction.imm13 =  existing_label_list[i].offset - current_offset ;
+                encoded_instruction.imm13 *= 4; // Convert 32 bit words into 8 bit bytes
+                printf("%d = %d - %d", encoded_instruction.imm13, existing_label_list[i].offset, current_offset);
                 break;
             }
-            printf("Invalid label given for branch instruction!");
         }
 
     print_b_type(encoded_instruction, output_file);
 
 }
 
-void save_label(char* token)
+void save_label(char* token, unsigned int offset)
 {
     token[strlen(token) - 1] = '\0';
     label_list_size++;
     strcpy(existing_label_list[label_list_size-1].name, token);
-    existing_label_list[label_list_size-1].offset = current_offset; 
+    existing_label_list[label_list_size-1].offset = offset; 
+    printf("label encoded = %s", token);
 }
 
 
@@ -260,25 +281,19 @@ void parse_and_encode_instruction(char line[], FILE* output_file)
     // Tokenize the line (separated by spaces, commas, or tabs)
     char *token = strtok(buffer, " ,\t");
 
-    // Check if the line is a label
-    if(token[strlen(token) - 1] == ':')
-    {
-        save_label(token);
-    }
-    // If not proceed as usual with the encoding
-    else for(int i = 0 ; i < mnemonic_list_size ; i++)
+    for(int i = 0 ; i < mnemonic_list_size ; i++)
     {
 
         if(strcmp(token, instruction_mnemonics_list[i].mnemonic) == 0)
         {
-            
+                
             switch(instruction_mnemonics_list[i].format)
             {
                 case 'r':
                     encode_R_type(token, output_file, instruction_mnemonics_list[i].index);
                     break;
                 case 'I':
-                    encode_ILOAD_type(token, output_file, instruction_mnemonics_list[i].index);
+                     encode_ILOAD_type(token, output_file, instruction_mnemonics_list[i].index);
                     break;
                 case 'i':
                     encode_I_type(token, output_file, instruction_mnemonics_list[i].index);
@@ -291,11 +306,10 @@ void parse_and_encode_instruction(char line[], FILE* output_file)
                     encode_B_type(token, output_file, instruction_mnemonics_list[i].index);
                     break;
             }
-            break;
-        }
 
-        current_offset += 1;
-
+        }  
     }
+    current_offset += 1;
 }
+
 

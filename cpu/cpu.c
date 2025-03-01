@@ -29,9 +29,16 @@ int main(int argc, char* argv[])
     bool processor_running = true;
     unsigned int current_instruction;
     unsigned int instruction_counter = 0;
+    bool increment_pc = true;
 
-    while(processor_running)
+    int overflow = 0;
+
+    while(processor_running && overflow < 100)
     {
+        //temporary measure
+        overflow++;
+
+
         //Instruction fetch
         current_instruction = *pc;
         instruction_counter++;
@@ -42,9 +49,10 @@ int main(int argc, char* argv[])
 
         uint32_t old_pc = (uint32_t)pc;
 
+        increment_pc = true;
+
         switch(get_opcode(current_instruction))
         {
-            
 
             case R_OP:
                 printf("Starting R instruction\n");
@@ -64,9 +72,15 @@ int main(int argc, char* argv[])
             case S_OP:
                 printf("Starting S instruction\n");
                 S_instruction_execute(current_instruction, data_segment);
+
+            case B_OP:
+                printf("Starting B instruction\n");
+                B_instruction_execute(current_instruction, &pc, &increment_pc);
+
         }
 
-        pc += 1;
+        if(increment_pc == true)
+            pc += 1;
 
         log_file = fopen("log.txt", "a");
         fprintf(log_file, "   PC = 0x%x / 0x%x\n", old_pc, (int)pc);

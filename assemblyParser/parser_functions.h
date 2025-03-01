@@ -42,7 +42,7 @@ typedef struct {
     unsigned short int funct3: 3;
     unsigned short int rs1: 5;
     unsigned short int rs2: 5;
-    short int imm12: 12;
+    short int imm13: 13;
 
 } B_type;
 
@@ -60,8 +60,9 @@ typedef struct {
 } label_list;
 
 
-#define mnemonic_list_size 8
+#define mnemonic_list_size 15
 extern instruction_mnemonics instruction_mnemonics_list[];
 void parse_and_encode_instruction(char line[], FILE* output_file);
+void save_label(char* token, unsigned int offset);
 
 #endif
