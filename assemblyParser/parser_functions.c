@@ -51,7 +51,11 @@ B_type B_type_list[] =
     //1100011 - 100 BLT
     {0b1100011, 0b100, 0, 0, 0},
     //1100011 - 101 BGE
-    {0b1100011, 0b101, 0, 0, 0}
+    {0b1100011, 0b101, 0, 0, 0},
+    //1100011 - 110 BLTU
+    {0b1100011, 0b110, 0, 0, 0},
+    //1100011 - 111 BGEu
+    {0b1100011, 0b111, 0, 0, 0}
 };
 
 instruction_mnemonics instruction_mnemonics_list[] =
@@ -70,7 +74,9 @@ instruction_mnemonics instruction_mnemonics_list[] =
     {"beq", 'b', 0},
     {"bne", 'b', 1},
     {"blt", 'b', 2},
-    {"bge", 'b', 3}
+    {"bge", 'b', 3},
+    {"bltu", 'b', 4},
+    {"bgeu", 'b', 5}
 };
 
 label_list existing_label_list[20];
@@ -291,25 +297,30 @@ void parse_and_encode_instruction(char line[], FILE* output_file)
             {
                 case 'r':
                     encode_R_type(token, output_file, instruction_mnemonics_list[i].index);
+                    current_offset += 1;
                     break;
                 case 'I':
                      encode_ILOAD_type(token, output_file, instruction_mnemonics_list[i].index);
+                     current_offset += 1;
                     break;
                 case 'i':
                     encode_I_type(token, output_file, instruction_mnemonics_list[i].index);
+                    current_offset += 1;
                     break;
                 case 's':
                     encode_S_type(token, output_file, instruction_mnemonics_list[i].index);
+                    current_offset += 1;
                     break;
                 case 'b':
                     printf("encoding b_type!");
+                    current_offset += 1;
                     encode_B_type(token, output_file, instruction_mnemonics_list[i].index);
                     break;
             }
 
         }  
     }
-    current_offset += 1;
+
 }
 
 

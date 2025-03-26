@@ -60,7 +60,7 @@ typedef struct {
 } label_list;
 
 
-#define mnemonic_list_size 15
+#define mnemonic_list_size 17
 extern instruction_mnemonics instruction_mnemonics_list[];
 void parse_and_encode_instruction(char line[], FILE* output_file);
 void save_label(char* token, unsigned int offset);

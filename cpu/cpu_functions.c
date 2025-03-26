@@ -286,6 +286,30 @@ void B_instruction_execute(unsigned int instruction, unsigned int** pc, bool* in
             }
             break;
         }
+
+        //BLTU
+        case 0b110:
+        {
+            strcpy(mnemonic, "bltu");
+            if(((uint64_t)x[get_rs1(instruction)]) < ((uint64_t)x[get_rs2(instruction)]))
+            {
+                *pc += (get_immediate_branch(instruction) / 4);
+                *increment_pc = false;
+            }
+            break;
+        }
+
+        //BGEU
+        case 0b111:
+        {
+            strcpy(mnemonic, "bgeu");
+            if(((uint64_t)x[get_rs1(instruction)]) >= ((uint64_t)x[get_rs2(instruction)]))
+            {
+                *pc += (get_immediate_branch(instruction) / 4);
+                *increment_pc = false;
+            }
+            break;
+        }
     }
 
     print_klog(instruction, 'b', mnemonic, 0, 0);
