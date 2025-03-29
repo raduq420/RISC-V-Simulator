@@ -86,7 +86,6 @@ int64_t alu_unit(char* mnemonic, int64_t in1, int64_t in2, uint8_t funct3, uint8
 {
     switch(funct3)
     {
-
         
         //ADD - ADDI - SUB
         case 0b000:
@@ -110,30 +109,99 @@ int64_t alu_unit(char* mnemonic, int64_t in1, int64_t in2, uint8_t funct3, uint8
             }
             break;
         
+        //SRL - SRLI
+        case 0b101:
+            if(funct7 != 0b1111111)
+            {
+                strcpy(mnemonic, "srl");
+                return (uint64_t)in1 >> (in2 & 0x3F);
+            }
+            else
+            {
+                strcpy(mnemonic, "srli");
+                return (uint64_t)in1 >> (in2 & 0x3F);
+            }
+
         //SLL - SLLI
         case 0b001:
-            strcpy(mnemonic, "sll");
-            return (in1 << (in2 & 0x3F));
+            if(funct7 != 0b1111111)
+            {
+                strcpy(mnemonic, "sll");
+                return (uint64_t)in1 << (in2 & 0x3F);
+            }
+            else
+            {
+                strcpy(mnemonic, "slli");
+                return (uint64_t)in1 << (in2 & 0x3F);
+            }
         
-        //XOR
+        //XOR - XORI
         case 0b100:
-            strcpy(mnemonic, "xor");
-            return in1 ^ in2;
+            if(funct7 != 0b1111111)
+            {
+                strcpy(mnemonic, "xor");
+                return in1 ^ in2;
+            }
+            else
+            {
+                strcpy(mnemonic, "xori");
+                return in1 ^ in2;
+            }
+            
 
-        //SLT
+        //SLT - SLTI
         case 0b010:
-            strcpy(mnemonic, "slt");
-            return in1 < in2;
+            if(funct7 != 0b1111111)
+            {   
+                strcpy(mnemonic, "slt");
+                return in1 < in2;
+            }
+            else
+            {
+                strcpy(mnemonic, "slti");
+                return in1 < in2;
+            }
+        
+        //SLTU - SLTIU
+        case 0b011:
+            if(funct7 != 0b1111111)
+            {   
+                strcpy(mnemonic, "sltu");
+                return (uint64_t)in1 < (uint64_t)in2;
+            }
+            else
+            {
+                strcpy(mnemonic, "sltiu");
+                return (uint64_t)in1 < (uint64_t)in2;
+            }
 
         //AND
         case 0b111:
-            strcpy(mnemonic, "and");
-            return in1 & in2;
+        if(funct7 != 0b1111111)
+            {   
+                strcpy(mnemonic, "and");
+                return in1 & in2;
+            }
+            else
+            {
+                strcpy(mnemonic, "andi");
+                return in1 & in2;
+            }
+            
 
         //OR
         case 0b110:
-            strcpy(mnemonic, "or");
-            return in1 | in2;
+            if(funct7 != 0b1111111)
+            {
+                strcpy(mnemonic, "or");
+                return in1 | in2;
+            }
+            else
+            {
+                strcpy(mnemonic, "ori");
+                return in1 | in2;
+            }
+            
     }
 
     return 0;
@@ -200,15 +268,57 @@ void S_instruction_execute(unsigned int instruction, uint8_t* data_segment)
         case 0b010:
         {
             strcpy(mnemonic, "sw");
-            uint32_t* data_address;
-            data_address = (uint32_t*)(data_segment + x[get_rs1(instruction)] + get_imm12_S(instruction));
+            int32_t* data_address;
+            data_address = (int32_t*)(data_segment + x[get_rs1(instruction)] + get_imm12_S(instruction));
             *data_address = x[get_rs2(instruction)];
+
+            print_klog(instruction, 's', mnemonic, x[get_rs1(instruction)] + get_imm12_S(instruction), (int32_t)x[get_rs2(instruction)]);
+
             break;
         }
+
+        //SB
+        case 0b000:
+        {
+            strcpy(mnemonic, "sb");
+            int8_t* data_address;
+            data_address = (int8_t*)(data_segment + x[get_rs1(instruction)] + get_imm12_S(instruction));
+            *data_address = x[get_rs2(instruction)];
+
+            print_klog(instruction, 's', mnemonic, x[get_rs1(instruction)] + get_imm12_S(instruction), (int8_t)x[get_rs2(instruction)]);
+
+            break;
+        }
+
+        //SH
+        case 0b001:
+        {
+            strcpy(mnemonic, "sh");
+            int16_t* data_address;
+            data_address = (int16_t*)(data_segment + x[get_rs1(instruction)] + get_imm12_S(instruction));
+            *data_address = x[get_rs2(instruction)];
+
+            print_klog(instruction, 's', mnemonic, x[get_rs1(instruction)] + get_imm12_S(instruction), (int16_t)x[get_rs2(instruction)]);
+
+            break;
+        }
+
+        //Sd
+        case 0b011:
+        {
+            strcpy(mnemonic, "sd");
+            int64_t* data_address;
+            data_address = (int64_t*)(data_segment + x[get_rs1(instruction)] + get_imm12_S(instruction));
+            *data_address = x[get_rs2(instruction)];
+
+            print_klog(instruction, 's', mnemonic, x[get_rs1(instruction)] + get_imm12_S(instruction), (int64_t)x[get_rs2(instruction)]);
+
+            break;
+        }
+
     }
 
-    print_klog(instruction, 's', mnemonic, x[get_rs1(instruction)] + get_imm12_S(instruction), x[get_rs2(instruction)]);
-
+    
 }
 
 void ILOAD_instruction_execute(unsigned int instruction, uint8_t* data_segment)
@@ -221,8 +331,71 @@ void ILOAD_instruction_execute(unsigned int instruction, uint8_t* data_segment)
         case 0b010:
         {
             strcpy(mnemonic, "lw");
+            int32_t* data_address;
+            data_address = (int32_t*)(data_segment + get_imm12_I(instruction) + x[get_rs1(instruction)]);
+            x[get_rd(instruction)] = *data_address;
+            break;
+        }
+
+        //LD
+        case 0b011:
+        {
+            strcpy(mnemonic, "ld");
+            int64_t* data_address;
+            data_address = (int64_t*)(data_segment + get_imm12_I(instruction) + x[get_rs1(instruction)]);
+            x[get_rd(instruction)] = *data_address;
+            break;
+        }
+
+        //LWu
+        case 0b110:
+        {
+            strcpy(mnemonic, "lwu");
             uint32_t* data_address;
             data_address = (uint32_t*)(data_segment + get_imm12_I(instruction) + x[get_rs1(instruction)]);
+            x[get_rd(instruction)] = *data_address;
+            break;
+        }
+
+        //LB
+        case 0b000:
+        {
+            strcpy(mnemonic, "lb");
+            int8_t* data_address;
+            data_address = (int8_t*)(data_segment + get_imm12_I(instruction) + x[get_rs1(instruction)]);
+            x[get_rd(instruction)] = *data_address;
+
+            break;
+        }
+
+        //LH
+        case 0b001:
+        {
+            strcpy(mnemonic, "lh");
+            int16_t* data_address;
+            data_address = (int16_t*)(data_segment + get_imm12_I(instruction) + x[get_rs1(instruction)]);
+            x[get_rd(instruction)] = *data_address;
+
+            break;
+        }
+
+        //LBU
+        case 0b100:
+        {
+            strcpy(mnemonic, "lbu");
+            uint8_t* data_address;
+            data_address = (uint8_t*)(data_segment + get_imm12_I(instruction) + x[get_rs1(instruction)]);
+            x[get_rd(instruction)] = *data_address;
+
+            break;
+        }
+
+        //LHU
+        case 0b101:
+        {
+            strcpy(mnemonic, "lhu");
+            uint16_t *data_address;
+            data_address = (uint16_t*)(data_segment + get_imm12_I(instruction) + x[get_rs1(instruction)]);
             x[get_rd(instruction)] = *data_address;
 
             break;

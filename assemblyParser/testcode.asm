@@ -1,6 +1,19 @@
-addi x1, x1, 10
+addi x1, x1, 43701
 addi x2, x2, 5
-slt x6, x2, x1
+ori x11, x2, 2
+slt x6, x2, x0
+slti x6, x2, -7
+sltiu x6, x2, -7
+sw x1, 8(x2)
+sh x1, 20(x2)
+sb x1, 30(x2) 
+lw x5, 8(x2)
+lb x5, 8(x2)
+lh x5, 8(x2)
+lbu x5, 8(x2)
+lhu x5, 8(x2)
+lwu x5, 8(x2)
+ld x5, 8(x2)
 and x6, x2, x1
 addi x6, x6, -5
 addi x7, x7, -10

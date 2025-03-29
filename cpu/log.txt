@@ -1,142 +1,167 @@
 
-1: addi x1, x1, 10
-   X1 = 0 / 10
-   PC = 0xc02958 / 0xc0295c
+1: addi x1, x1, -1355
+   X1 = 0 / -1355
+   PC = 0x6b29a8 / 0x6b29ac
 2: addi x2, x2, 5
    X2 = 0 / 5
-   PC = 0xc0295c / 0xc02960
-3: slt x6, x2, x1
+   PC = 0x6b29ac / 0x6b29b0
+3: ori x11, x2, 2
+   X11 = 0 / 7
+   PC = 0x6b29b0 / 0x6b29b4
+4: slt x6, x2, x0
+   X6 = 0 / 0
+   PC = 0x6b29b4 / 0x6b29b8
+5: slti x6, x2, -7
+   X6 = 0 / 0
+   PC = 0x6b29b8 / 0x6b29bc
+6: sltiu x6, x2, -7
    X6 = 0 / 1
-   PC = 0xc02960 / 0xc02964
-4: and x6, x2, x1
-   X6 = 1 / 0
-   PC = 0xc02964 / 0xc02968
-5: addi x6, x6, -5
-   X6 = 0 / -5
-   PC = 0xc02968 / 0xc0296c
-6: addi x7, x7, -10
+   PC = 0x6b29bc / 0x6b29c0
+7: sw x8, 8(x2)
+   MW 0xd: -1355
+   PC = 0x6b29c0 / 0x6b29c4
+8: sh x20, 20(x2)
+   MW 0x19: -1355
+   PC = 0x6b29c4 / 0x6b29c8
+9: sb x30, 30(x2)
+   MW 0x23: -75
+   PC = 0x6b29c8 / 0x6b29cc
+10: lw x5, 8(x2)
+   MR 0xd: -1355
+   PC = 0x6b29cc / 0x6b29d0
+11: lb x5, 8(x2)
+   MR 0xd: -75
+   PC = 0x6b29d0 / 0x6b29d4
+12: lh x5, 8(x2)
+   MR 0xd: -1355
+   PC = 0x6b29d4 / 0x6b29d8
+13: lbu x5, 8(x2)
+   MR 0xd: 181
+   PC = 0x6b29d8 / 0x6b29dc
+14: lhu x5, 8(x2)
+   MR 0xd: 64181
+   PC = 0x6b29dc / 0x6b29e0
+15: lwu x5, 8(x2)
+   MR 0xd: 4294965941
+   PC = 0x6b29e0 / 0x6b29e4
+16: ld x5, 8(x2)
+   MR 0xd: 4294965941
+   PC = 0x6b29e4 / 0x6b29e8
+17: and x6, x2, x1
+   X6 = 1 / 5
+   PC = 0x6b29e8 / 0x6b29ec
+18: addi x6, x6, -5
+   X6 = 5 / 0
+   PC = 0x6b29ec / 0x6b29f0
+19: addi x7, x7, -10
    X7 = 0 / -10
-   PC = 0xc0296c / 0xc02970
-7: bltu x6, x7, 32
-   PC = 0xc02970 / 0xc02974
-8: bgeu x6, x7, 28
-   PC = 0xc02974 / 0xc02990
-9: add x3, x3, x1
-   X3 = 0 / 10
-   PC = 0xc02990 / 0xc02994
-10: addi x2, x2, -1
-   X2 = 5 / 4
-   PC = 0xc02994 / 0xc02998
-11: bne x2, x4, -8
-   PC = 0xc02998 / 0xc02990
-12: add x3, x3, x1
-   X3 = 10 / 20
-   PC = 0xc02990 / 0xc02994
-13: addi x2, x2, -1
-   X2 = 4 / 3
-   PC = 0xc02994 / 0xc02998
-14: bne x2, x4, -8
-   PC = 0xc02998 / 0xc02990
-15: add x3, x3, x1
-   X3 = 20 / 30
-   PC = 0xc02990 / 0xc02994
-16: addi x2, x2, -1
-   X2 = 3 / 2
-   PC = 0xc02994 / 0xc02998
-17: bne x2, x4, -8
-   PC = 0xc02998 / 0xc02990
-18: add x3, x3, x1
-   X3 = 30 / 40
-   PC = 0xc02990 / 0xc02994
-19: addi x2, x2, -1
-   X2 = 2 / 1
-   PC = 0xc02994 / 0xc02998
-20: bne x2, x4, -8
-   PC = 0xc02998 / 0xc02990
+   PC = 0x6b29f0 / 0x6b29f4
+20: bltu x6, x7, 32
+   PC = 0x6b29f4 / 0x6b2a14
 21: add x3, x3, x1
-   X3 = 40 / 50
-   PC = 0xc02990 / 0xc02994
+   X3 = 0 / -1355
+   PC = 0x6b2a14 / 0x6b2a18
 22: addi x2, x2, -1
-   X2 = 1 / 0
-   PC = 0xc02994 / 0xc02998
+   X2 = 5 / 4
+   PC = 0x6b2a18 / 0x6b2a1c
 23: bne x2, x4, -8
-   PC = 0xc02998 / 0xc0299c
-24: add x1, x2, x3
-   X1 = 10 / 50
-   PC = 0xc0299c / 0xc029a0
-25:    PC = 0xc029a0 / 0xc029a4
-26:    PC = 0xc029a4 / 0xc029a8
-27:    PC = 0xc029a8 / 0xc029ac
-28:    PC = 0xc029ac / 0xc029b0
-29:    PC = 0xc029b0 / 0xc029b4
-30:    PC = 0xc029b4 / 0xc029b8
-31:    PC = 0xc029b8 / 0xc029bc
-32:    PC = 0xc029bc / 0xc029c0
-33:    PC = 0xc029c0 / 0xc029c4
-34:    PC = 0xc029c4 / 0xc029c8
-35:    PC = 0xc029c8 / 0xc029cc
-36:    PC = 0xc029cc / 0xc029d0
-37:    PC = 0xc029d0 / 0xc029d4
-38:    PC = 0xc029d4 / 0xc029d8
-39:    PC = 0xc029d8 / 0xc029dc
-40:    PC = 0xc029dc / 0xc029e0
-41:    PC = 0xc029e0 / 0xc029e4
-42:    PC = 0xc029e4 / 0xc029e8
-43:    PC = 0xc029e8 / 0xc029ec
-44:    PC = 0xc029ec / 0xc029f0
-45:    PC = 0xc029f0 / 0xc029f4
-46:    PC = 0xc029f4 / 0xc029f8
-47:    PC = 0xc029f8 / 0xc029fc
-48:    PC = 0xc029fc / 0xc02a00
-49:    PC = 0xc02a00 / 0xc02a04
-50:    PC = 0xc02a04 / 0xc02a08
-51:    PC = 0xc02a08 / 0xc02a0c
-52:    PC = 0xc02a0c / 0xc02a10
-53:    PC = 0xc02a10 / 0xc02a14
-54:    PC = 0xc02a14 / 0xc02a18
-55:    PC = 0xc02a18 / 0xc02a1c
-56:    PC = 0xc02a1c / 0xc02a20
-57:    PC = 0xc02a20 / 0xc02a24
-58:    PC = 0xc02a24 / 0xc02a28
-59:    PC = 0xc02a28 / 0xc02a2c
-60:    PC = 0xc02a2c / 0xc02a30
-61:    PC = 0xc02a30 / 0xc02a34
-62:    PC = 0xc02a34 / 0xc02a38
-63:    PC = 0xc02a38 / 0xc02a3c
-64:    PC = 0xc02a3c / 0xc02a40
-65:    PC = 0xc02a40 / 0xc02a44
-66:    PC = 0xc02a44 / 0xc02a48
-67:    PC = 0xc02a48 / 0xc02a4c
-68:    PC = 0xc02a4c / 0xc02a50
-69:    PC = 0xc02a50 / 0xc02a54
-70:    PC = 0xc02a54 / 0xc02a58
-71:    PC = 0xc02a58 / 0xc02a5c
-72:    PC = 0xc02a5c / 0xc02a60
-73:    PC = 0xc02a60 / 0xc02a64
-74:    PC = 0xc02a64 / 0xc02a68
-75:    PC = 0xc02a68 / 0xc02a6c
-76:    PC = 0xc02a6c / 0xc02a70
-77:    PC = 0xc02a70 / 0xc02a74
-78:    PC = 0xc02a74 / 0xc02a78
-79:    PC = 0xc02a78 / 0xc02a7c
-80:    PC = 0xc02a7c / 0xc02a80
-81:    PC = 0xc02a80 / 0xc02a84
-82:    PC = 0xc02a84 / 0xc02a88
-83:    PC = 0xc02a88 / 0xc02a8c
-84:    PC = 0xc02a8c / 0xc02a90
-85:    PC = 0xc02a90 / 0xc02a94
-86:    PC = 0xc02a94 / 0xc02a98
-87:    PC = 0xc02a98 / 0xc02a9c
-88:    PC = 0xc02a9c / 0xc02aa0
-89:    PC = 0xc02aa0 / 0xc02aa4
-90:    PC = 0xc02aa4 / 0xc02aa8
-91:    PC = 0xc02aa8 / 0xc02aac
-92:    PC = 0xc02aac / 0xc02ab0
-93:    PC = 0xc02ab0 / 0xc02ab4
-94:    PC = 0xc02ab4 / 0xc02ab8
-95:    PC = 0xc02ab8 / 0xc02abc
-96:    PC = 0xc02abc / 0xc02ac0
-97:    PC = 0xc02ac0 / 0xc02ac4
-98:    PC = 0xc02ac4 / 0xc02ac8
-99:    PC = 0xc02ac8 / 0xc02acc
-100:    PC = 0xc02acc / 0xc02ad0
+   PC = 0x6b2a1c / 0x6b2a14
+24: add x3, x3, x1
+   X3 = -1355 / -2710
+   PC = 0x6b2a14 / 0x6b2a18
+25: addi x2, x2, -1
+   X2 = 4 / 3
+   PC = 0x6b2a18 / 0x6b2a1c
+26: bne x2, x4, -8
+   PC = 0x6b2a1c / 0x6b2a14
+27: add x3, x3, x1
+   X3 = -2710 / -4065
+   PC = 0x6b2a14 / 0x6b2a18
+28: addi x2, x2, -1
+   X2 = 3 / 2
+   PC = 0x6b2a18 / 0x6b2a1c
+29: bne x2, x4, -8
+   PC = 0x6b2a1c / 0x6b2a14
+30: add x3, x3, x1
+   X3 = -4065 / -5420
+   PC = 0x6b2a14 / 0x6b2a18
+31: addi x2, x2, -1
+   X2 = 2 / 1
+   PC = 0x6b2a18 / 0x6b2a1c
+32: bne x2, x4, -8
+   PC = 0x6b2a1c / 0x6b2a14
+33: add x3, x3, x1
+   X3 = -5420 / -6775
+   PC = 0x6b2a14 / 0x6b2a18
+34: addi x2, x2, -1
+   X2 = 1 / 0
+   PC = 0x6b2a18 / 0x6b2a1c
+35: bne x2, x4, -8
+   PC = 0x6b2a1c / 0x6b2a20
+36: add x1, x2, x3
+   X1 = -1355 / -6775
+   PC = 0x6b2a20 / 0x6b2a24
+37:    PC = 0x6b2a24 / 0x6b2a28
+38:    PC = 0x6b2a28 / 0x6b2a2c
+39:    PC = 0x6b2a2c / 0x6b2a30
+40:    PC = 0x6b2a30 / 0x6b2a34
+41:    PC = 0x6b2a34 / 0x6b2a38
+42:    PC = 0x6b2a38 / 0x6b2a3c
+43:    PC = 0x6b2a3c / 0x6b2a40
+44:    PC = 0x6b2a40 / 0x6b2a44
+45:    PC = 0x6b2a44 / 0x6b2a48
+46:    PC = 0x6b2a48 / 0x6b2a4c
+47:    PC = 0x6b2a4c / 0x6b2a50
+48:    PC = 0x6b2a50 / 0x6b2a54
+49:    PC = 0x6b2a54 / 0x6b2a58
+50:    PC = 0x6b2a58 / 0x6b2a5c
+51:    PC = 0x6b2a5c / 0x6b2a60
+52:    PC = 0x6b2a60 / 0x6b2a64
+53:    PC = 0x6b2a64 / 0x6b2a68
+54:    PC = 0x6b2a68 / 0x6b2a6c
+55:    PC = 0x6b2a6c / 0x6b2a70
+56:    PC = 0x6b2a70 / 0x6b2a74
+57:    PC = 0x6b2a74 / 0x6b2a78
+58:    PC = 0x6b2a78 / 0x6b2a7c
+59:    PC = 0x6b2a7c / 0x6b2a80
+60:    PC = 0x6b2a80 / 0x6b2a84
+61:    PC = 0x6b2a84 / 0x6b2a88
+62:    PC = 0x6b2a88 / 0x6b2a8c
+63:    PC = 0x6b2a8c / 0x6b2a90
+64:    PC = 0x6b2a90 / 0x6b2a94
+65:    PC = 0x6b2a94 / 0x6b2a98
+66:    PC = 0x6b2a98 / 0x6b2a9c
+67:    PC = 0x6b2a9c / 0x6b2aa0
+68:    PC = 0x6b2aa0 / 0x6b2aa4
+69:    PC = 0x6b2aa4 / 0x6b2aa8
+70:    PC = 0x6b2aa8 / 0x6b2aac
+71:    PC = 0x6b2aac / 0x6b2ab0
+72:    PC = 0x6b2ab0 / 0x6b2ab4
+73:    PC = 0x6b2ab4 / 0x6b2ab8
+74:    PC = 0x6b2ab8 / 0x6b2abc
+75:    PC = 0x6b2abc / 0x6b2ac0
+76:    PC = 0x6b2ac0 / 0x6b2ac4
+77:    PC = 0x6b2ac4 / 0x6b2ac8
+78:    PC = 0x6b2ac8 / 0x6b2acc
+79:    PC = 0x6b2acc / 0x6b2ad0
+80:    PC = 0x6b2ad0 / 0x6b2ad4
+81:    PC = 0x6b2ad4 / 0x6b2ad8
+82:    PC = 0x6b2ad8 / 0x6b2adc
+83:    PC = 0x6b2adc / 0x6b2ae0
+84:    PC = 0x6b2ae0 / 0x6b2ae4
+85:    PC = 0x6b2ae4 / 0x6b2ae8
+86:    PC = 0x6b2ae8 / 0x6b2aec
+87:    PC = 0x6b2aec / 0x6b2af0
+88:    PC = 0x6b2af0 / 0x6b2af4
+89:    PC = 0x6b2af4 / 0x6b2af8
+90:    PC = 0x6b2af8 / 0x6b2afc
+91:    PC = 0x6b2afc / 0x6b2b00
+92:    PC = 0x6b2b00 / 0x6b2b04
+93:    PC = 0x6b2b04 / 0x6b2b08
+94:    PC = 0x6b2b08 / 0x6b2b0c
+95:    PC = 0x6b2b0c / 0x6b2b10
+96:    PC = 0x6b2b10 / 0x6b2b14
+97:    PC = 0x6b2b14 / 0x6b2b18
+98:    PC = 0x6b2b18 / 0x6b2b1c
+99:    PC = 0x6b2b1c / 0x6b2b20
+100:    PC = 0x6b2b20 / 0x6b2b24

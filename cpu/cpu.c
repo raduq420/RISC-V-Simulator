@@ -72,7 +72,8 @@ int main(int argc, char* argv[])
             case S_OP:
                 printf("Starting S instruction\n");
                 S_instruction_execute(current_instruction, data_segment);
-
+                break;
+                
             case B_OP:
                 printf("Starting B instruction\n");
                 B_instruction_execute(current_instruction, &pc, &increment_pc);
