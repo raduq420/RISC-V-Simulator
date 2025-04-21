@@ -77,6 +77,17 @@ int main(int argc, char* argv[])
             case B_OP:
                 printf("Starting B instruction\n");
                 B_instruction_execute(current_instruction, &pc, &increment_pc);
+                break;
+
+            case LUI_OP:
+                printf("Starting LUI instruction\n");
+                LUI_instruction_execute(current_instruction);
+                break;
+
+            case AUIPC_OP:
+                printf("Starting AUIPC instruction\n");
+                AUIPC_instruction_execute(current_instruction, (unsigned int)pc);
+                break;
 
         }
 

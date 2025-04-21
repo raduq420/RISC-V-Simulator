@@ -23,6 +23,9 @@
 // B-type
 #define B_OP 0b1100011
 
+// Special types
+#define LUI_OP 0b0110111
+#define AUIPC_OP 0b00010111
 
 void populate_code_segment(unsigned int* code_segment, FILE* input_file);
 void R_instruction_execute(unsigned int current_instruction);
@@ -30,6 +33,8 @@ void IMM_instruction_execute(unsigned int instruction);
 void ILOAD_instruction_execute(unsigned int instruction, uint8_t* data_segment);
 void S_instruction_execute(unsigned int instruction, uint8_t* data_segment);
 void B_instruction_execute(unsigned int instruction, unsigned int** pc, bool* increment_pc);
+void LUI_instruction_execute(unsigned int instruction);
+void AUIPC_instruction_execute(unsigned int instruction, unsigned int PC);
 
 uint8_t get_opcode(unsigned int instruction);
 uint8_t get_rd(unsigned int instruction);

@@ -30,4 +30,9 @@ add x3, x3, x1
 addi x2, x2, -1
 bne x2, x4, start
 add x1, x2, x3
+lui x5, 20
+addi x5, x5, 20
+auipc x5, 20
+addi x5, x5, 20
+
 

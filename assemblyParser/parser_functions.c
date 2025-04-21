@@ -127,7 +127,10 @@ instruction_mnemonics instruction_mnemonics_list[] =
     {"blt", 'b', 2},
     {"bge", 'b', 3},
     {"bltu", 'b', 4},
-    {"bgeu", 'b', 5}
+    {"bgeu", 'b', 5},
+    {"lui", 'z', 0},
+    {"auipc", 'z', 1},
+    {"jal", 'z', 2}
 };
 
 label_list existing_label_list[20];
@@ -318,6 +321,52 @@ void encode_B_type(char* token, FILE* output_file, int list_index)
 
 }
 
+void encode_special_type(char* token, FILE* output_file)
+{
+    if(strcmp(token, "lui") == 0)
+    {
+        //Print and encode lui instruction
+      
+        token = strtok(NULL, " ,\t");
+        unsigned int rd = atoi((token + 1));
+
+        //Print immediate value
+        token = strtok(NULL, " ,\t");
+        print_binary(atoi(token), output_file, 20);
+
+        //Print destination register
+        print_binary(rd, output_file, 5);
+
+        //Print opcode
+        print_binary(55, output_file, 7);
+
+        fprintf(output_file, "\n");
+    }
+    else if(strcmp(token, "auipc") == 0)
+    {
+        //Print and encode lui instruction
+      
+        token = strtok(NULL, " ,\t");
+        unsigned int rd = atoi((token + 1));
+
+        //Print immediate value
+        token = strtok(NULL, " ,\t");
+        print_binary(atoi(token), output_file, 20);
+
+        //Print destination register
+        print_binary(rd, output_file, 5);
+
+        //Print opcode
+        print_binary(23, output_file, 7);
+
+        fprintf(output_file, "\n");
+    }
+    else if(strcmp(token, "jal") == 0)
+    {
+        
+    }
+}
+
 void save_label(char* token, unsigned int offset)
 {
     token[strlen(token) - 1] = '\0';
@@ -366,6 +415,11 @@ void parse_and_encode_instruction(char line[], FILE* output_file)
                     printf("encoding b_type!");
                     current_offset += 1;
                     encode_B_type(token, output_file, instruction_mnemonics_list[i].index);
+                    break;
+                case 'z':
+                    printf("encoding special type!");
+                    current_offset += 1;
+                    encode_special_type(token, output_file);
                     break;
             }
 

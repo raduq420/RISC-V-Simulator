@@ -490,3 +490,27 @@ void B_instruction_execute(unsigned int instruction, unsigned int** pc, bool* in
 
 
 }
+
+void LUI_instruction_execute(unsigned int instruction)
+{
+
+    char mnemonic[6];
+    strcpy(mnemonic, "lui");
+    int64_t oldValue = x[get_rd(instruction)];
+    x[get_rd(instruction)] = (uint64_t)(instruction & (0xFFFFF000));
+
+    print_klog(instruction, 'z', mnemonic, oldValue, x[get_rd(instruction)]);
+
+}
+
+void AUIPC_instruction_execute(unsigned int instruction, unsigned int PC)
+{
+
+    char mnemonic[6];
+    strcpy(mnemonic, "auipc");
+    int64_t oldValue = x[get_rd(instruction)];
+
+    x[get_rd(instruction)] = (uint64_t)(instruction & (0xFFFFF000)) + PC;
+
+    print_klog(instruction, 'z', mnemonic, oldValue, x[get_rd(instruction)]);
+}

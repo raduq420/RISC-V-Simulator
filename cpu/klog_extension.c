@@ -6,6 +6,7 @@ void print_klog(unsigned int instruction, char instruction_type, char* mnemonic,
 {
     FILE* log_file = fopen("log.txt", "a");
     int16_t immediate_12;
+    uint32_t immediate_20;
     switch(instruction_type)
     {
         case 'r':
@@ -30,6 +31,10 @@ void print_klog(unsigned int instruction, char instruction_type, char* mnemonic,
             immediate_12 = get_immediate_branch(instruction);
             fprintf(log_file, "%s x%d, x%d, %d\n", mnemonic, get_rs1(instruction), get_rs2(instruction), immediate_12);
             break;
+        case 'z':
+            immediate_20 = (instruction >> 12);
+            fprintf(log_file, "%s, x%d, %d\n", mnemonic, get_rd(instruction), immediate_20);
+            fprintf(log_file, "   X%d = %" PRId64 " / %" PRId64 "\n", get_rd(instruction), oldValue, newValue);
     }
     fclose(log_file);
 }
