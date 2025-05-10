@@ -86,7 +86,6 @@ int64_t alu_unit(char* mnemonic, int64_t in1, int64_t in2, uint8_t funct3, uint8
 {
     switch(funct3)
     {
-        
         //ADD - ADDI - SUB
         case 0b000:
             if(funct7 != 0b1111111)
@@ -207,7 +206,20 @@ int64_t alu_unit(char* mnemonic, int64_t in1, int64_t in2, uint8_t funct3, uint8
     return 0;
 }
 
+immediate21 get_immediate_jal(unsigned instruction)
+{
+    // Extract imm[20:1] (21 bits)
+    uint32_t imm21 = (instruction >> 12) & 0x1FFFFF; // mask lower 21 bits
 
+    // Sign-extend to 32 bits
+    int32_t signed_imm = ((int32_t)(imm21 << 11)) >> 11;  // shift left then arithmetic shift right
+    signed_imm *= 2;
+
+    immediate21 properly_signed;
+    properly_signed.value = signed_imm;
+
+    return properly_signed;
+}
 
 
 void populate_code_segment(unsigned int* code_segment, FILE* input_file)
@@ -513,4 +525,19 @@ void AUIPC_instruction_execute(unsigned int instruction, unsigned int PC)
     x[get_rd(instruction)] = (uint64_t)(instruction & (0xFFFFF000)) + PC;
 
     print_klog(instruction, 'z', mnemonic, oldValue, x[get_rd(instruction)]);
+}
+
+void JAL_instruction_execute(unsigned int instruction, unsigned int** pc, bool* increment_pc)
+{
+
+    char mnemonic[4];
+    int64_t oldValue = x[get_rd(instruction)];
+
+    strcpy(mnemonic, "jal");
+    x[get_rd(instruction)] = (int)(*pc + 1);
+    *pc += (get_immediate_jal(instruction).value / 4);
+    *increment_pc = false;
+
+
+    print_klog(instruction, 'j', mnemonic, oldValue, x[get_rd(instruction)]);
 }

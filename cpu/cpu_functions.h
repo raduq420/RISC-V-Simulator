@@ -26,6 +26,11 @@
 // Special types
 #define LUI_OP 0b0110111
 #define AUIPC_OP 0b00010111
+#define JAL_OP 0b1101111
+
+typedef struct {
+    int32_t value: 21;
+} immediate21;
 
 void populate_code_segment(unsigned int* code_segment, FILE* input_file);
 void R_instruction_execute(unsigned int current_instruction);
@@ -35,6 +40,7 @@ void S_instruction_execute(unsigned int instruction, uint8_t* data_segment);
 void B_instruction_execute(unsigned int instruction, unsigned int** pc, bool* increment_pc);
 void LUI_instruction_execute(unsigned int instruction);
 void AUIPC_instruction_execute(unsigned int instruction, unsigned int PC);
+void JAL_instruction_execute(unsigned int instruction, unsigned int** pc, bool* increment_pc);
 
 uint8_t get_opcode(unsigned int instruction);
 uint8_t get_rd(unsigned int instruction);
@@ -44,5 +50,7 @@ uint8_t get_rs2(unsigned int instruction);
 int16_t get_imm12_I(unsigned int instruction);
 uint8_t get_imm12_S(unsigned int instruction);
 int16_t get_immediate_branch(unsigned int instruction);
+immediate21 get_immediate_jal(unsigned instruction);
+
 
 #endif

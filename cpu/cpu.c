@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 
     int overflow = 0;
 
-    while(processor_running && overflow < 100)
+    while(processor_running && overflow < 1000)
     {
         //temporary measure
         overflow++;
@@ -89,6 +89,9 @@ int main(int argc, char* argv[])
                 AUIPC_instruction_execute(current_instruction, (unsigned int)pc);
                 break;
 
+            case JAL_OP:
+                printf("Starting JAL instruction\n");
+                JAL_instruction_execute(current_instruction, &pc, &increment_pc);
         }
 
         if(increment_pc == true)

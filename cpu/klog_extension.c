@@ -35,6 +35,10 @@ void print_klog(unsigned int instruction, char instruction_type, char* mnemonic,
             immediate_20 = (instruction >> 12);
             fprintf(log_file, "%s, x%d, %d\n", mnemonic, get_rd(instruction), immediate_20);
             fprintf(log_file, "   X%d = %" PRId64 " / %" PRId64 "\n", get_rd(instruction), oldValue, newValue);
+            break;
+        case 'j':
+            fprintf(log_file, "%s, x%d, %d\n", mnemonic, get_rd(instruction), get_immediate_jal(instruction).value);
+            fprintf(log_file, "   X%d = %" PRId64 " / %" PRId64 "\n", get_rd(instruction), oldValue, newValue);
     }
     fclose(log_file);
 }

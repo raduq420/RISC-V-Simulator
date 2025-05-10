@@ -59,10 +59,21 @@ typedef struct {
     unsigned int offset: 21;
 } label_list;
 
+typedef struct 
+{
+    char name[20];
+    int value;
+} data_list;
 
-#define mnemonic_list_size 36
+
+typedef struct {
+    int value: 21;
+} int21;
+
+#define mnemonic_list_size 37
 extern instruction_mnemonics instruction_mnemonics_list[];
 void parse_and_encode_instruction(char line[], FILE* output_file);
 void save_label(char* token, unsigned int offset);
+void save_data(char* token, int value);
 
 #endif

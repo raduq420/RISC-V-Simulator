@@ -133,9 +133,21 @@ instruction_mnemonics instruction_mnemonics_list[] =
     {"jal", 'z', 2}
 };
 
-label_list existing_label_list[20];
+label_list existing_label_list[64];
+data_list existing_data_list[64];
 short int label_list_size = 0;
+short int data_list_size = 0;
 unsigned int current_offset = 0;
+
+int is_numeric(const char* token) {
+
+    if (*token == '-' || *token == '+') token++; // Allow signed numbers
+    while (*token) {
+        if (!isdigit(*token)) return 0; // If non-digit found, return false
+        token++;
+    }
+    return 1;
+}
 
 void print_binary(unsigned int num, FILE* output_file, int number_size) {
     for (int i = number_size - 1; i >= 0; i--) {
@@ -223,8 +235,22 @@ void encode_I_type(char* token, FILE* output_file, int list_index)
 
     token = strtok(NULL, " ,\t"); // Get the next token
     //Setting the immediate value
-    encoded_instruction.imm12 = atoi(token);
-
+    if(is_numeric(token) == 1)
+    {  
+        printf("nigganigganigga");
+        encoded_instruction.imm12 = atoi(token); // Convert immediate string to integer
+    }
+    else
+        {for(int i = 0 ; i < data_list_size ; i++)
+        {
+            printf("nigganigganigga");
+            if(strcmp(token, existing_data_list[i].name) == 0)
+            {
+                encoded_instruction.imm12 =  existing_data_list[i].value ;
+                break;
+            }
+        }
+    }
 
     print_I_type(encoded_instruction, output_file);
 }
@@ -243,7 +269,17 @@ void encode_ILOAD_type(char* token, FILE* output_file, int list_index)
     char* open_paren = strchr(token, '('); // Find '(' in the token
     if (open_paren != NULL) {
         *open_paren = '\0'; // Null-terminate the immediate part
-        encoded_instruction.imm12 = atoi(token); // Immediate value
+        if(is_numeric(token) == 1)
+        encoded_instruction.imm12 = atoi(token); // Convert immediate string to integer
+        else
+        for(int i = 0 ; i < data_list_size ; i++)
+        {
+            if(strcmp(token, existing_data_list[i].name) == 0)
+            {
+                encoded_instruction.imm12 =  existing_data_list[i].value ;
+                break;
+            }
+        }
         encoded_instruction.rs1 = atoi((open_paren + 2)); // Source register (skip '(' and 'x')
     } else {
         fprintf(stderr, "Error: Invalid LW instruction format\n");
@@ -268,7 +304,17 @@ void encode_S_type(char* token, FILE* output_file, int list_index)
     char* open_paren = strchr(token, '('); // Find '(' in the token
     if (open_paren != NULL) {
         *open_paren = '\0'; // Null-terminate the immediate part
-        encoded_instruction.imm12 = atoi(token); // Immediate value
+        if(is_numeric(token) == 1)
+        encoded_instruction.imm12 = atoi(token); // Convert immediate string to integer
+        else
+        for(int i = 0 ; i < data_list_size ; i++)
+        {
+            if(strcmp(token, existing_data_list[i].name) == 0)
+            {
+                encoded_instruction.imm12 =  existing_data_list[i].value ;
+                break;
+            }
+        }
         encoded_instruction.rs1 = atoi((open_paren + 2)); // Base register (skip '(' and 'x')
     } else {
         fprintf(stderr, "Error: Invalid SW instruction format\n");
@@ -277,15 +323,6 @@ void encode_S_type(char* token, FILE* output_file, int list_index)
 
     // Print the encoded instruction
     print_S_type(encoded_instruction, output_file);
-}
-
-int is_numeric(const char* token) {
-    if (*token == '-' || *token == '+') token++; // Allow signed numbers
-    while (*token) {
-        if (!isdigit(*token)) return 0; // If non-digit found, return false
-        token++;
-    }
-    return 1;
 }
 
 void encode_B_type(char* token, FILE* output_file, int list_index)
@@ -363,7 +400,37 @@ void encode_special_type(char* token, FILE* output_file)
     }
     else if(strcmp(token, "jal") == 0)
     {
+        token = strtok(NULL, " ,\t");
+        unsigned int rd = atoi((token + 1)); // Convert "xN" to integer (skip 'x')
+        // Get the next token and set the immediate value (branch offset)
+        token = strtok(NULL, " ,\t");
+
+        int21 immediate;
+        if(is_numeric(token) == 1)
+        { 
+            immediate.value = atoi(token); // Convert immediate string to integer
+        }
+        else
+            for(int i = 0 ; i < label_list_size ; i++)
+            {
+                if(strcmp(token, existing_label_list[i].name) == 0)
+                {
+                    immediate.value =  existing_label_list[i].offset - current_offset ;
+                    immediate.value *= 4; // Convert 32 bit words into 8 bit bytes
+                    printf("%d = %d - %d", immediate.value, existing_label_list[i].offset, current_offset);
+                    break;
+                }
+            }
         
+        //Print bits 20:1
+        print_binary(immediate.value / 2, output_file, 20);
+        
+        //Print rd
+        print_binary(rd, output_file, 5);
+        //Print opcode
+        print_binary(111, output_file, 7);
+
+        fprintf(output_file, "\n");
     }
 }
 
@@ -376,7 +443,14 @@ void save_label(char* token, unsigned int offset)
     printf("label encoded = %s", token);
 }
 
-
+void save_data(char* token, int value)
+{
+    token[strlen(token) - 1] = '\0';
+    data_list_size++;
+    strcpy(existing_data_list[data_list_size-1].name, token);
+    existing_data_list[data_list_size-1].value = value; 
+    printf("data encoded = %s, equal to = %d", token, value);
+}
 
 void parse_and_encode_instruction(char line[], FILE* output_file)
 {
@@ -400,8 +474,8 @@ void parse_and_encode_instruction(char line[], FILE* output_file)
                     current_offset += 1;
                     break;
                 case 'I':
-                     encode_ILOAD_type(token, output_file, instruction_mnemonics_list[i].index);
-                     current_offset += 1;
+                    encode_ILOAD_type(token, output_file, instruction_mnemonics_list[i].index);
+                    current_offset += 1;
                     break;
                 case 'i':
                     encode_I_type(token, output_file, instruction_mnemonics_list[i].index);
