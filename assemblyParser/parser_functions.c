@@ -237,13 +237,11 @@ void encode_I_type(char* token, FILE* output_file, int list_index)
     //Setting the immediate value
     if(is_numeric(token) == 1)
     {  
-        printf("nigganigganigga");
         encoded_instruction.imm12 = atoi(token); // Convert immediate string to integer
     }
     else
         {for(int i = 0 ; i < data_list_size ; i++)
         {
-            printf("nigganigganigga");
             if(strcmp(token, existing_data_list[i].name) == 0)
             {
                 encoded_instruction.imm12 =  existing_data_list[i].value ;
