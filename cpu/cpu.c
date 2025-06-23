@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 
     int overflow = 0;
 
-    while(processor_running && overflow < 1000)
+    while(processor_running && overflow < 32000)
     {
         //temporary measure
         overflow++;
