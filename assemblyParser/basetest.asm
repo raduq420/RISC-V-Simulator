@@ -1,6 +1,7 @@
 
 success:
-add x0, x0, x0
-add x2, x2, x2
+addi x1, x1, 1
+ebreak x1, x2
 failed:
-sub x0, x0, x0
+ori x1, x1, 0xFFFFFFFE
+ebreak x1, x2

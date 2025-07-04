@@ -5,15 +5,21 @@ mama: .word 120
 tata: .byte 6
 
 .section .text
-addi x2, x3, mama
-addi x2, x3, tata
-addi x2, x3, 16
-hellou:
-sub x2, x2, x2
-jal x2, failed
+
+addi x6, x0, 45
+addi x8, x0, 26
+#prepare to print registers 6 and 8
+addi x2, x0, 13
+slli x2, x2, 1
+addi x1, x0, 17
+slli x1, x1, 8
+or x1, x1, x2
+
+
 
 success:
-add x0, x0, x0
-add x2, x2, x2
+addi x1, x1, 1
+ebreak x1, x2
 failed:
-sub x0, x0, x0
+ori x1, x1, 0xFFFFFFFE
+ebreak x1, x2

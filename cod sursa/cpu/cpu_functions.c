@@ -1,6 +1,5 @@
 #include "cpu_functions.h"
 #include "klog_extension.h"
-#include <inttypes.h>
 
 int64_t x[32];
 
@@ -541,52 +540,4 @@ void JAL_instruction_execute(unsigned int instruction, unsigned int** pc, bool* 
 
 
     print_klog(instruction, 'j', mnemonic, oldValue, x[get_rd(instruction)]);
-}
-
-
-//A encoding
-
-//0 - When set, simulation passed succesfully
-//  - When NOT set, simulation failed
-
-//1 - When set, print register mentioned in bits [2:7]
-
-//8 - When set, print register mentioned in bits [9:14]
-
-void EBREAK_instruction_execute(unsigned int instruction)
-{
-    FILE* log_file = fopen("log.txt", "a");
-    if (!log_file) return;  // Fail gracefully if file can't be opened
-
-    fprintf(log_file, "EBREAK x%d, x%d\n", get_rd(instruction), get_rs1(instruction));
-
-    unsigned int a = x[get_rd(instruction)];
-
-    // Bit 0: Simulation pass/fail flag
-    if ((a & 0b1) != 0)
-    {
-        fprintf(log_file, "Simulation passed successfully\n");
-    }
-    else
-    {
-        fprintf(log_file, "Simulation failed\n");
-    }
-
-    // Bit 1: If set, print register at bits [2:7]
-    if ((a & 0b10) != 0)
-    {
-        unsigned int reg_index1 = (a >> 2) & 0b111111;  // extract bits 2–7
-        if (reg_index1 < 64)
-            fprintf(log_file, "X%d = %" PRId64 "\n", reg_index1, x[reg_index1]);
-    }
-
-    // Bit 8: If set, print register at bits [9:14]
-    if ((a & 0b100000000) != 0)
-    {
-        unsigned int reg_index2 = (a >> 9) & 0b111111;  // extract bits 9–14
-        if (reg_index2 < 64)
-            fprintf(log_file, "X%d = %" PRId64 "\n", reg_index2, x[reg_index2]);
-    }
-
-    fclose(log_file);
 }

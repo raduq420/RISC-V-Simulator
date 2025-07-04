@@ -27,8 +27,6 @@
 #define LUI_OP 0b0110111
 #define AUIPC_OP 0b00010111
 #define JAL_OP 0b1101111
-#define EBREAK_OP 0b01110011
-
 
 typedef struct {
     int32_t value: 21;
@@ -43,8 +41,6 @@ void B_instruction_execute(unsigned int instruction, unsigned int** pc, bool* in
 void LUI_instruction_execute(unsigned int instruction);
 void AUIPC_instruction_execute(unsigned int instruction, unsigned int PC);
 void JAL_instruction_execute(unsigned int instruction, unsigned int** pc, bool* increment_pc);
-void EBREAK_instruction_execute(unsigned int instruction);
-
 
 uint8_t get_opcode(unsigned int instruction);
 uint8_t get_rd(unsigned int instruction);

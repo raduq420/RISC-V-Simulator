@@ -1,7 +1,7 @@
 cd assemblyParser
 gcc -c -Wall parser_functions.c parser.c
 gcc parser.o parser_functions.o -o parser
-parser loadstore.asm
+parser testcode.asm
 cd ..
 cd cpu
 gcc -c -Wall cpu.c cpu_functions.c .\klog_extension.c

@@ -130,8 +130,7 @@ instruction_mnemonics instruction_mnemonics_list[] =
     {"bgeu", 'b', 5},
     {"lui", 'z', 0},
     {"auipc", 'z', 1},
-    {"jal", 'z', 2},
-    {"ebreak", 'z', 3}
+    {"jal", 'z', 2}
 };
 
 label_list existing_label_list[64];
@@ -238,11 +237,13 @@ void encode_I_type(char* token, FILE* output_file, int list_index)
     //Setting the immediate value
     if(is_numeric(token) == 1)
     {  
+        printf("nigganigganigga");
         encoded_instruction.imm12 = atoi(token); // Convert immediate string to integer
     }
     else
         {for(int i = 0 ; i < data_list_size ; i++)
         {
+            printf("nigganigganigga");
             if(strcmp(token, existing_data_list[i].name) == 0)
             {
                 encoded_instruction.imm12 =  existing_data_list[i].value ;
@@ -428,33 +429,6 @@ void encode_special_type(char* token, FILE* output_file)
         print_binary(rd, output_file, 5);
         //Print opcode
         print_binary(111, output_file, 7);
-
-        fprintf(output_file, "\n");
-    }
-    else if(strcmp(token, "ebreak") == 0)
-    {
-        token = strtok(NULL, " ,\t");
-        unsigned int r1 = atoi((token + 1)); // Convert "xN" to integer (skip 'x')
-        // Get the next token and set the immediate value (branch offset)
-
-        token = strtok(NULL, " ,\t");
-        unsigned int r2 = atoi((token + 1)); // Convert "xN" to integer (skip 'x')
-        // Get the next token and set the immediate value (branch offset)
-
-
-        //Padding
-        print_binary(0, output_file, 12);
-
-        //Print r2
-        print_binary(r2, output_file, 5);
-
-        //Funct3=000
-        print_binary(0, output_file, 3);
-
-        //Print r1
-        print_binary(r1, output_file, 5);
-        //Print opcode
-        print_binary(115, output_file, 7);
 
         fprintf(output_file, "\n");
     }

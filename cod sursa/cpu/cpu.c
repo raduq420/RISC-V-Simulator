@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 
     int overflow = 0;
 
-    while(processor_running && overflow < 32000)
+    while(processor_running && overflow < 1000)
     {
         //temporary measure
         overflow++;
@@ -92,13 +92,6 @@ int main(int argc, char* argv[])
             case JAL_OP:
                 printf("Starting JAL instruction\n");
                 JAL_instruction_execute(current_instruction, &pc, &increment_pc);
-                break;
-            
-            case EBREAK_OP:
-                printf("Starting EBREAK instruction\n");
-                EBREAK_instruction_execute(current_instruction);
-                processor_running = false;
-                break;
         }
 
         if(increment_pc == true)
